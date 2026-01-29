@@ -1,5 +1,3 @@
-import time
-
 from clients.http.gateway.users.client import build_users_gateway_http_client
 
 # Инициализируем клиент UsersGatewayHTTPClient

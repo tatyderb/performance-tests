@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, HttpUrl, EmailStr, ValidationError, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict
 from pydantic.alias_generators import to_camel
 
 class CreateUserRequestSchema(BaseModel):
