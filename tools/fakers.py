@@ -114,4 +114,4 @@ class Fake:
 
 
 # Создаем экземпляр класса Fake с использованием Faker
-fake = Fake(faker=Faker())
+fake = Fake(faker=Faker('ru_RU'))

@@ -173,8 +173,6 @@ class OperationsGatewayHTTPClient(HTTPClient):
 
     def make_fee_operation(self, card_id: str, account_id: str) -> MakeFeeOperationResponseSchema:
         request = MakeFeeOperationRequestSchema(
-            status=OperationStatus.COMPLETED,
-            amount=55.77,
             card_id=card_id,
             account_id=account_id
         )
@@ -190,8 +188,6 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект MakeTopUpOperationResponseSchema с результатом операции.
         """
         body = MakeTopUpOperationRequestSchema(
-            status=OperationStatus.COMPLETED,
-            amount=55.77,
             card_id=card_id,
             account_id=account_id
         )
@@ -207,8 +203,6 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект MakeCashbackOperationResponseSchema с результатом операции.
         """
         body = MakeCashbackOperationRequestSchema(
-            status=OperationStatus.COMPLETED,
-            amount=55.77,
             card_id=card_id,
             account_id=account_id
         )
@@ -224,8 +218,6 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект MakeTransferOperationResponseSchema с результатом операции.
         """
         body = MakeTransferOperationRequestSchema(
-            status=OperationStatus.COMPLETED,
-            amount=55.77,
             card_id=card_id,
             account_id=account_id
         )
@@ -241,11 +233,8 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект MakePurchaseOperationResponseSchema с результатом операции.
         """
         body = MakePurchaseOperationRequestSchema(
-            status=OperationStatus.COMPLETED,
-            amount=55.77,
             card_id=card_id,
             account_id=account_id,
-            category="taxi"
         )
         response = self.make_purchase_operation_api(body)
         return MakePurchaseOperationResponseSchema.model_validate_json(response.text)
@@ -259,8 +248,6 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект MakeBillPaymentOperationResponseSchema с результатом операции.
         """
         body = MakeBillPaymentOperationRequestSchema(
-            status=OperationStatus.COMPLETED,
-            amount=55.77,
             card_id=card_id,
             account_id=account_id
         )
@@ -276,8 +263,6 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект MakeWithdawalOperationResponseSchema с результатом операции.
         """
         body = MakeWithdawalOperationRequestSchema(
-            status=OperationStatus.COMPLETED,
-            amount=55.77,
             card_id=card_id,
             account_id=account_id
         )

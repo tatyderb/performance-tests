@@ -1,7 +1,9 @@
 from enum import StrEnum
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
+
+from tools.fakers import fake
 
 
 class OperationType(StrEnum):
@@ -57,8 +59,8 @@ class GetOperationsResponseSchema(BaseModel):
 
 class MakeOperationRequestSchema(BaseModel):
     model_config = ConfigDict(alias_generator=to_camel, validate_by_name=True)
-    status: OperationStatus
-    amount: float
+    status: OperationStatus = Field(default_factory=lambda: fake.enum(OperationStatus))
+    amount: float = Field(default_factory=fake.amount)
     card_id: str
     account_id: str
 
@@ -81,7 +83,7 @@ class MakeWithdawalOperationRequestSchema(MakeOperationRequestSchema):
     pass
 
 class MakePurchaseOperationRequestSchema(MakeOperationRequestSchema):
-    category: str
+    category: str = Field(default_factory=fake.category)
 
 class MakeFeeOperationResponseSchema(OperationResponseSchema):
     pass
@@ -112,3 +114,5 @@ class MakePurchaseOperationResponseSchema(OperationResponseSchema):
 #     card_id=card_id,
 #     account_id=account_id
 # )
+# body = MakeTopUpOperationRequestSchema(card_id=card_id, account_id=account_id)
+# print(body)
