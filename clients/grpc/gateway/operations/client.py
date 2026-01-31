@@ -228,7 +228,7 @@ class OperationsGatewayGRPCClient(GRPCClient):
         return self.make_cashback_operation_api(request)
 
 
-def build_Operations_gateway_grpc_client() -> OperationsGatewayGRPCClient:
+def build_operations_gateway_grpc_client() -> OperationsGatewayGRPCClient:
     """
     Фабрика для создания экземпляра OperationsGatewayGRPCClient.
 
