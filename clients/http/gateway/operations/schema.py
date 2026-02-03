@@ -41,6 +41,10 @@ class OperationReceiptSchema(BaseModel):
     url: str
     document: str
 
+class GetOperationsSummaryQuerySchema(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, validate_by_alias=True)
+    account_id: str
+
 class OperationsSummarySchema(BaseModel):
     model_config = ConfigDict(alias_generator=to_camel, validate_by_alias=True)
     spent_amount: float

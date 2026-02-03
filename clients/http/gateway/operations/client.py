@@ -1,7 +1,8 @@
 from httpx import Response, QueryParams
+from locust.env import Environment
 
 from clients.http.client import HTTPClient, HTTPClientExtensions
-from clients.http.gateway.client import build_gateway_http_client
+from clients.http.gateway.client import build_gateway_http_client, build_gateway_locust_http_client
 from clients.http.gateway.operations.schema import (
     GetOperationsQuerySchema,
     MakeFeeOperationRequestSchema,
@@ -21,7 +22,8 @@ from clients.http.gateway.operations.schema import (
     MakeTransferOperationResponseSchema,
     MakePurchaseOperationResponseSchema,
     MakeBillPaymentOperationResponseSchema,
-    MakeWithdawalOperationResponseSchema, OperationStatus
+    MakeWithdawalOperationResponseSchema,
+    GetOperationsSummaryQuerySchema
 )
 
 
@@ -185,7 +187,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param account_id: Id счета
         :return: Ответ от сервера (объект OperationsSummaryResponseSchema).
         """
-        query = GetOperationsQuerySchema(accountId=account_id)
+        query = GetOperationsSummaryQuerySchema(accountId=account_id)
         response = self.get_operations_summary_api(query=query)
         return OperationsSummaryResponseSchema.model_validate_json(response.text)
 
@@ -295,3 +297,16 @@ def build_operations_gateway_http_client() -> OperationsGatewayHTTPClient:
     :return: Готовый к использованию DocumentsGatewayHTTPClient.
     """
     return OperationsGatewayHTTPClient(client=build_gateway_http_client())
+
+# Новый билдер для нагрузочного тестирования
+def build_operations_gateway_locust_http_client(environment: Environment) -> OperationsGatewayHTTPClient:
+    """
+    Функция создаёт экземпляр OperationsGatewayHTTPClient адаптированного под Locust.
+
+    Клиент автоматически собирает метрики и передаёт их в Locust через хуки.
+    Используется исключительно в нагрузочных тестах.
+
+    :param environment: объект окружения Locust.
+    :return: экземпляр AccountsGatewayHTTPClient с хуками сбора метрик.
+    """
+    return OperationsGatewayHTTPClient(client=build_gateway_locust_http_client(environment))
