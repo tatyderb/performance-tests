@@ -1,6 +1,6 @@
 from httpx import Response, QueryParams
 
-from clients.http.client import HTTPClient
+from clients.http.client import HTTPClient, HTTPClientExtensions
 from clients.http.gateway.cards.schema import CardSchema
 from clients.http.gateway.client import build_gateway_http_client
 from clients.http.gateway.accounts.schema import (
@@ -15,14 +15,18 @@ class AccountsGatewayHTTPClient(HTTPClient):
     Клиент для взаимодействия с /api/v1/accounts сервиса http-gateway.
     """
 
-    def get_accounts_api(self, query: GetAccountsQuerySchema) -> Response:
+    def get_accounts_api(self, query: GetAccountsQuerySchema):
         """
         Выполняет GET-запрос на получение списка счетов пользователя.
 
-        :param query: Словарь с параметрами запроса, например: {'userId': '123'}.
+        :param query: Pydantic-модель с параметрами запроса, например: {'userId': '123'}.
         :return: Объект httpx.Response с данными о счетах.
         """
-        return self.get("/api/v1/accounts", params=QueryParams(**query.model_dump(by_alias=True)))
+        return self.get(
+            "/api/v1/accounts",
+            params=QueryParams(**query.model_dump(by_alias=True)),
+            extensions=HTTPClientExtensions(route="/api/v1/accounts")  # Явно передаём логическое имя маршрута
+        )
 
     def open_deposit_account_api(self, request: OpenDepositAccountRequestSchema) -> Response:
         """
