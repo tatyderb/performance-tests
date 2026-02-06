@@ -74,6 +74,6 @@ def build_documents_gateway_locust_grpc_client(environment: Environment) -> Docu
     Используется исключительно в нагрузочных тестах.
 
     :param environment: объект окружения Locust.
-    :return: экземпляр OperationsGatewayGRPCClient с хуками сбора метрик.
+    :return: экземпляр DocumentsGatewayGRPCClient с хуками сбора метрик.
     """
     return DocumentsGatewayGRPCClient(channel=build_gateway_locust_grpc_client(environment))
