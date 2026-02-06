@@ -1,22 +1,22 @@
 from locust import User, between, task
 
 # Импортируем схемы ответов, чтобы типизировать shared state
-from clients.http.gateway.locust import GatewayHTTPTaskSet
-from clients.http.gateway.users.schema import CreateUserResponseSchema
+from clients.grpc.gateway.locust import GatewayGRPCTaskSet
+from contracts.services.gateway.users.rpc_create_user_pb2 import CreateUserResponse
 
 
-class GetAccountsTaskSet(GatewayHTTPTaskSet):
+class GetAccountsTaskSet(GatewayGRPCTaskSet):
     """
-    Нагрузочный сценарий, который случайно:
+    Нагрузочный сценарий, который последовательно:
     1. Создаёт нового пользователя.
-    2. Открывает сберегательный счёт (если есть созданный пользователь).
-    3. Получает документы по счёту (тариф и контракт), если есть счёт.
+    2. Открывает сберегательный счёт.
+    3. Получает документы по счёту (тариф и контракт).
 
-    Использует базовый GatewayHTTPTaskSet и уже созданных в нём API клиентов.
+    Использует базовый GatewayGRPCSequentialTaskSet и уже созданных в нём API клиентов.
     """
 
     # Shared state — сохраняем результаты запросов для дальнейшего использования
-    create_user_response: CreateUserResponseSchema | None = None
+    create_user_response: CreateUserResponse | None = None
 
     @task(2)
     def create_user(self):
@@ -28,31 +28,32 @@ class GetAccountsTaskSet(GatewayHTTPTaskSet):
     @task(2)
     def open_deposit_account(self):
         """
-        Открываем депозитный счёт для созданного пользователя.
-        Проверяем, что предыдущий шаг был успешным.
+        Открываем депозит счёт для созданного пользователя.
+        Проверяем, что пользователь есть.
         """
         if not self.create_user_response:
             return  # Если пользователь не был создан, нет смысла продолжать
 
-        self.open_deposit_account_response = self.accounts_gateway_client.open_deposit_account(
+        self.accounts_gateway_client.open_deposit_account(
             user_id=self.create_user_response.user.id
         )
 
     @task(6)
     def get_accounts(self):
         """
-        Получаем список счетов, если есть пользователь.
+        Получаем список счетов, если пользователь есть.
         """
         if not self.create_user_response:
             return  # Если пользователь не был создан, нет смысла продолжать
-        # print(f'\n\n{self.open_savings_account_response.account.id=}\n\n')
-        self.accounts_gateway_client.get_accounts(            user_id=self.create_user_response.user.id
+
+        self.accounts_gateway_client.get_accounts(
+            user_id=self.create_user_response.user.id
         )
 
 
 class GetAccountsScenarioUser(User):
     """
-    Пользователь Locust, исполняющий последовательный сценарий получения документов.
+    Пользователь Locust, исполняющий последовательный сценарий создания и получения счетов.
     """
     host = "localhost"
     tasks = [GetAccountsTaskSet]
