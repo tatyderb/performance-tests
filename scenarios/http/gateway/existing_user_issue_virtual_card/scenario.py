@@ -37,7 +37,7 @@ class IssueVirtualCardTaskSet(GatewayHTTPTaskSet):
         # выпускаем виртуальную карту
         self.cards_gateway_client.issue_virtual_card(
             user_id=self.seed_user.user_id,
-            account_id=self.seed_user.credit_card_accounts[0].account_id
+            account_id=self.seed_user.debit_card_accounts[0].account_id
         )
 
 
