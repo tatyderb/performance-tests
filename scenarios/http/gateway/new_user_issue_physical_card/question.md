@@ -17,7 +17,9 @@
 Иначе прошу помочь с настройкой cadvisor и дашборды в графане.
 
 # Cadvisor
-
+```python
+75c930d522cf   gcr.io/cadvisor/cadvisor:v0.47.0   "/usr/bin/cadvisor -…"   54 minutes ago   Restarting (255) 19 seconds ago   cadvisor
+```
 При использовании `docker_compose.yaml` получаю непрерывную ошибку:
 
 ```
