@@ -1,3 +1,13 @@
+"""
+Запуск:
+uvicorn fastapi_basics:app --reload
+или
+python fastapi_basics.py
+Swagger:
+http://localhost:8000/docs
+"""
+
+
 import uvicorn  # импортируем Uvicorn для программного запуска
 from fastapi import FastAPI, Query, Path, Body, APIRouter
 from pydantic import BaseModel
