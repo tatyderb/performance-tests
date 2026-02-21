@@ -9,6 +9,8 @@ from clients.http.gateway.cards.schema import (
     IssuePhysicalCardRequestSchema,
     IssuePhysicalCardResponseSchema
 )
+from tools.routes import APIRoutes
+
 
 class CardsGatewayHTTPClient(HTTPClient):
     """
@@ -22,7 +24,7 @@ class CardsGatewayHTTPClient(HTTPClient):
         :param request: Pydantic-модель с данными для создания новой карты.
         :return: Ответ от сервера (объект httpx.Response).
         """
-        return self.post("/api/v1/cards/issue-virtual-card", json=request.model_dump(by_alias=True))
+        return self.post(f"{APIRoutes.CARDS}/issue-virtual-card", json=request.model_dump(by_alias=True))
 
     def issue_physical_card_api(self, request: IssuePhysicalCardRequestSchema) -> Response:
         """
@@ -31,7 +33,7 @@ class CardsGatewayHTTPClient(HTTPClient):
         :param request: Pydantic-модель с данными для создания новой карты.
         :return: Ответ от сервера (объект httpx.Response).
         """
-        return self.post("/api/v1/cards/issue-physical-card", json=request.model_dump(by_alias=True))
+        return self.post(f"{APIRoutes.CARDS}/issue-physical-card", json=request.model_dump(by_alias=True))
 
     def issue_virtual_card(self, user_id: str, account_id: str) -> IssueVirtualCardResponseSchema:
         request = IssueVirtualCardRequestSchema(userId=user_id, accountId=account_id)
