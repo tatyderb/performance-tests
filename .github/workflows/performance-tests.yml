@@ -72,18 +72,42 @@ jobs:
       - name: Run load tests and generate HTML report
         run: locust --config=${{ github.event.inputs.SCENARIO }} --html=./reports/${{ github.run_id }}/index.html
 
-      # 9. Деплой HTML-отчёта в GitHub Pages, чтобы можно было посмотреть результаты в браузере
-      - name: Deploy HTML report to GitHub Pages
-        if: always()
-        uses: peaceiris/actions-gh-pages@v4
+      # 9. Сохраняем HTML-отчёт в артефактах, следующей джобой достанем и опубликуем
+      - name: Upload report as artifact
+        if: always()  # Всегда сохраняем артефакт, даже если тесты упали
+        uses: actions/upload-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}  # Авторизация для push в gh-pages
-          keep_files: true  # Сохраняем предыдущие отчёты
-          publish_dir: reports  # Публикуем директорию reports
-          publish_branch: gh-pages  # На ветке gh-pages
+          name: test-report-${{ github.run_id }}
+          path: ./reports/${{ github.run_id }}
+          retention-days: 1  # Храним артефакт недолго, так как он будет опубликован на GitHub Pages
 
       # 10. Корректно останавливаем docker-контейнеры и удаляем volume-ы (например, temp-файлы)
       - name: Stop test services
         if: always()
         run: docker compose -f docker-compose.ci.yaml down -v
         working-directory: performance-qa-engineer-course
+
+  publish-report:
+    runs-on: ubuntu-latest
+    # Запускается только после завершения run-tests
+    needs: run-tests
+    # Запускается всегда, независимо от статуса run-tests (успех, ошибка, отмена)
+    if: always()
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download report artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: test-report-${{ github.run_id }}
+          path: ./reports/${{ github.run_id }}
+
+      - name: Deploy HTML report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          keep_files: true
+          publish_dir: reports
+          publish_branch: gh-pages
