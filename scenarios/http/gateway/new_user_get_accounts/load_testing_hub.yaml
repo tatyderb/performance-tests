@@ -2,7 +2,7 @@ api_url: http://localhost:13000
 service:
   id: 1
 scenario:
-  id: 4
+  id: 9
   name: "new_user_get_accounts"
   file: "./scenarios/http/gateway/new_user_get_accounts/v1.0.conf"
   version: "v1.0"

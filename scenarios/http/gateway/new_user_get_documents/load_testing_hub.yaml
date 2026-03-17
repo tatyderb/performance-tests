@@ -2,8 +2,8 @@ api_url: http://localhost:13000
 service:
   id: 1
 scenario:
-  id: 4
-  name: "existing user make purchase operation"
+  id: 10
+  name: "new_user_get_documents"
   file: "./scenarios/http/gateway/new_user_get_documents/v1.0.conf"
   version: "v1.0"
   number_of_users: 300
