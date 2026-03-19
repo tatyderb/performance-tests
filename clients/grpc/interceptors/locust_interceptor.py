@@ -50,6 +50,20 @@ class LocustInterceptor(UnaryUnaryClientInterceptor):
             response_time=(time.perf_counter() - start_time) * 1000,  # Время выполнения в миллисекундах
             response_length=response_length,  # Размер ответа в байтах
         )
+        # объект, а хочется текстовый дамп объекта
+        # print(f'{client_call_details.method} {response}')
+
+        # не работает.
+        # Если ответ имеет атрибуты, можно вывести их
+        if hasattr(response, 'DESCRIPTOR'):
+            print(f"Message type: {response.DESCRIPTOR.name}")
+
+            # Выводим все поля ответа
+            print("Response fields:")
+            for field_descriptor in response.DESCRIPTOR.fields:
+                field_name = field_descriptor.name
+                field_value = getattr(response, field_name)
+                print(f"  {field_name}: {field_value}")
 
         # Возвращаем результат вызова (future-объект)
         return response
